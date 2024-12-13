@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Car Analyzer</title>
+</head>
+<body>
+<h1>Car Analyzer</h1>
+<form id="analyzerForm">
+    <label for="inputText">Enter Text:</label>
+    <input type="text" id="inputText" name="inputText" required>
+    <button type="submit">Analyze</button>
+</form>
+<h2>Results:</h2>
+<pre id="results"></pre>
+
+<script>
+    document.getElementById('analyzerForm').addEventListener('submit', function (event) {
+        event.preventDefault();
+        const inputText = document.getElementById('inputText').value;
+
+        // Выполняем GET-запрос к API
+        fetch(`http://localhost:8080/search?query=${encodeURIComponent(inputText)}`)
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error(`Error: ${response.statusText}`);
+                }
+                return response.json();
+            })
+            .then(data => {
+                // Отображаем результаты
+                document.getElementById('results').textContent = JSON.stringify(data, null, 2);
+            })
+            .catch(error => {
+                document.getElementById('results').textContent = error;
+            });
+    });
+</script>
+</body>
+</html>
